@@ -9,7 +9,10 @@ Storage actually supported:
 
 - Doctrine/ORM
 
-- [Installation](https://github.com/rezzza/ModelViolationLoggerBundle/blob/master/Resources/doc/install.markdown)
+
+Steps:
+
+- [Installation](https://github.com/rezzza/ModelViolationLoggerBundle/blob/master/Resources/doc/installation.markdown)
 - [Usage](https://github.com/rezzza/ModelViolationLoggerBundle/blob/master/Resources/doc/usage.markdown)
 
 # Todo
