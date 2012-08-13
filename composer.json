@@ -1,0 +1,21 @@
+{
+    "name": "rezzza/model-violation-logger-bundle",
+    "description": "Log violations from a model.",
+    "keywords": ["log", "model", "symfony", "bundle"],
+    "type": "symfony-bundle",
+    "homepage": "https://github.com/rezzza/ModelViolationLoggerBundle",
+    "license": "MIT",
+    "authors": [{
+        "name": "Community contributors",
+        "homepage": "https://github.com/rezzza/ModelViolationLoggerBundle/contributors"
+    }],
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/framework-bundle": "2.1.*"
+    },
+    "autoload":     {
+        "psr-0": { "Rezzza\\ModelViolationLoggerBundle": "" }
+    },
+    "target-dir": "Rezzza/ModelViolationLoggerBundle"
+
+}

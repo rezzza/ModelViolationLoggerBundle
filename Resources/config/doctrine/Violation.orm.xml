@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                  http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <mapped-superclass name="Rezzza\ModelViolationLoggerBundle\Entity\Violation" table="violation">
+
+        <field name="subjectModel" column="subject_model" type="string" length="255" />
+
+        <field name="subjectId" column="subject_id" type="integer" length="11" />
+
+        <field name="code" column="code" type="string" length="40" nullable="true" />
+
+        <field name="message" column="message" type="string" length="255" nullable="true" />
+
+        <field name="messageParameters" column="message_parameters" type="array" nullable="true" />
+
+        <field name="fixed" column="fixed" type="boolean" />
+
+        <field name="createdAt" column="created_at" type="datetime" />
+
+        <field name="updatedAt" column="updated_at" type="datetime" />
+
+    </mapped-superclass>
+
+</doctrine-mapping>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="rezzza.violation_manager.default.class">Rezzza\ModelViolationLoggerBundle\Entity\ViolationManager</parameter>
+        <parameter key="rezzza.violation_listener.class">Rezzza\ModelViolationLoggerBundle\Entity\Listener\ViolationListener</parameter>
+    </parameters>
+
+    <services>
+        <service id="rezzza.violation_manager.default" class="%rezzza.violation_manager.default.class%">
+            <argument>%rezzza.violation_class%</argument>
+        </service>
+
+        <service id="rezzza.violation_listener" class="%rezzza.violation_listener.class%" public="false">
+            <argument type="service" id="rezzza.violation_manager.processor" />
+            <tag name="doctrine.event_listener" event="postUpdate" />
+            <tag name="doctrine.event_listener" event="postPersist" />
+        </service>
+    </services>
+
+</container>
