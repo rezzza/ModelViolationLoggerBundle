@@ -57,6 +57,7 @@ class Processor
         }
 
         $this->violationManager->setContainer($this->container);
+
         return $this->violationManager->link($model, $list);
     }
 }

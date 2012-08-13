@@ -22,7 +22,7 @@ class ViolationManager implements ViolationManagerInterface
     protected $container;
 
     /**
-     * @param string        $violationClass violation class
+     * @param string $violationClass violation class
      */
     public function __construct($violationClass)
     {

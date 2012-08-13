@@ -89,7 +89,7 @@ class Violation
     }
 
     /**
-     * @param string $subjectModel
+     * @param  string    $subjectModel
      * @return Violation
      */
     public function setSubjectModel($subjectModel)
@@ -108,7 +108,7 @@ class Violation
     }
 
     /**
-     * @param integer $subjectId
+     * @param  integer   $subjectId
      * @return Violation
      */
     public function setSubjectId($subjectId)
@@ -127,7 +127,7 @@ class Violation
     }
 
     /**
-     * @param string $code
+     * @param  string    $code
      * @return Violation
      */
     public function setCode($code)
@@ -146,7 +146,7 @@ class Violation
     }
 
     /**
-     * @param string $message
+     * @param  string    $message
      * @return Violation
      */
     public function setMessage($message)
@@ -165,7 +165,7 @@ class Violation
     }
 
     /**
-     * @param array $messageParameters
+     * @param  array     $messageParameters
      * @return Violation
      */
     public function setMessageParameters(array $messageParameters)
@@ -184,7 +184,7 @@ class Violation
     }
 
     /**
-     * @param boolean $fixed
+     * @param  boolean   $fixed
      * @return Violation
      */
     public function setFixed($fixed)
@@ -205,7 +205,7 @@ class Violation
     }
 
     /**
-     * @param \DateTime $createdAt
+     * @param  \DateTime $createdAt
      * @return Violation
      */
     public function setCreatedAt(\DateTime $createdAt)
@@ -224,7 +224,7 @@ class Violation
     }
 
     /**
-     * @param \DateTime $updatedAt
+     * @param  \DateTime $updatedAt
      * @return Violation
      */
     public function setUpdatedAt(\DateTime $updatedAt)
