@@ -3,11 +3,10 @@
 namespace Rezzza\ModelViolationLoggerBundle\Entity;
 
 use Rezzza\ModelViolationLoggerBundle\Model\ViolationManagerInterface;
-use Rezzza\ModelViolationLoggerBundle\Model\ViolationLoggerInterface as ModelViolationLoggerInterface;
 use Rezzza\ModelViolationLoggerBundle\Violation\ViolationList;
 use Rezzza\ModelViolationLoggerBundle\Violation\ViolationListComparator;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ViolationManager implements ViolationManagerInterface
 {
@@ -19,28 +18,21 @@ class ViolationManager implements ViolationManagerInterface
     /**
      * @var ContainerInterface
      */
-    protected $container;
+    private $container;
 
     /**
-     * @param string        $violationClass violation class
+     * @param ContainerInterface $container container
      */
-    public function __construct($violationClass)
+    public function __construct(ContainerInterface $container)
     {
-        $this->violationClass = $violationClass;
+        $this->container      = $container;
+        $this->violationClass = $container->getParameter('rezzza.violation_class');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setContainer(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function link(ModelViolationLoggerInterface $model, ViolationList $list)
+    public function link($model, ViolationList $list)
     {
         $actualViolations = $this->getViolationListNotFixed($model);
 
@@ -67,7 +59,7 @@ class ViolationManager implements ViolationManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function getViolationListNotFixed(ModelViolationLoggerInterface $model)
+    public function getViolationListNotFixed($model)
     {
         $list = new ViolationList();
 
@@ -102,7 +94,7 @@ class ViolationManager implements ViolationManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function getClassForModel(ModelViolationLoggerInterface $model)
+    public function getClassForModel($model)
     {
         if ($model instanceof \Doctrine\ORM\Proxy\Proxy) {
             $refl = new \ReflectionClass($model);

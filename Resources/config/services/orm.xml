@@ -11,7 +11,7 @@
 
     <services>
         <service id="rezzza.violation_manager.default" class="%rezzza.violation_manager.default.class%">
-            <argument>%rezzza.violation_class%</argument>
+            <argument type="service" id="service_container" />
         </service>
 
         <service id="rezzza.violation_listener" class="%rezzza.violation_listener.class%" public="false">

@@ -3,7 +3,6 @@
 namespace Rezzza\ModelViolationLoggerBundle\Entity\Listener;
 
 use Rezzza\ModelViolationLoggerBundle\Violation\Processor;
-use Rezzza\ModelViolationLoggerBundle\Model\ViolationLoggerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 
 /**
@@ -23,7 +22,7 @@ class ViolationListener
      */
     public function __construct(Processor $processor)
     {
-        $this->processor = $processor;
+        $this->processor      = $processor;
     }
 
     /**
@@ -31,7 +30,7 @@ class ViolationListener
      */
     public function postPersist(LifecycleEventArgs $args)
     {
-        return $this->handle($args);
+        $this->processor->process($args->getEntity());
     }
 
     /**
@@ -39,19 +38,6 @@ class ViolationListener
      */
     public function postUpdate(LifecycleEventArgs $args)
     {
-        return $this->handle($args);
-    }
-
-    /**
-     * @param LifecycleEventArgs $args args
-     */
-    private function handle(LifecycleEventArgs $args)
-    {
-        $entity = $args->getEntity();
-        if (!$entity instanceof ViolationLoggerInterface) {
-            return;
-        }
-
-        $this->processor->process($entity);
+        $this->processor->process($args->getEntity());
     }
 }

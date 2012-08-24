@@ -10,8 +10,8 @@
 
     <services>
         <service id="rezzza.violation_manager.processor" class="%rezzza.violation_manager.processor.class%">
-            <argument type="service" id="service_container" />
             <argument type="service" id="rezzza.violation_manager.default" />
+            <argument type="service" id="rezzza.violation.handler.manager" />
         </service>
     </services>
 </container>

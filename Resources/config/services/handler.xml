@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="rezzza.violation.handler.manager.class">Rezzza\ModelViolationLoggerBundle\Handler\Manager</parameter>
+        <parameter key="rezzza.violation.symfony_validation.handler.class">Rezzza\ModelViolationLoggerBundle\Handler\SymfonyValidatorHandler</parameter>
+    </parameters>
+
+    <services>
+        <service id="rezzza.violation.handler.manager" class="%rezzza.violation.handler.manager.class%" />
+
+        <service id="rezzza.violation.symfony_validation.handler" class="%rezzza.violation.symfony_validation.handler.class%">
+            <argument>%rezzza.violation_class%</argument>
+            <argument type="service" id="validator" />
+        </service>
+    </services>
+</container>

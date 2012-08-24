@@ -25,6 +25,7 @@ class RezzzaModelViolationLoggerExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/services'));
         $loader->load(sprintf('%s.xml', $config['storage']));
+        $loader->load('handler.xml');
         $loader->load('processor.xml');
     }
 }

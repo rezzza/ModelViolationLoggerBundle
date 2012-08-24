@@ -3,30 +3,15 @@ Usage
 
 You want to add the violation logger to your entity `Pizza`, you want to log violations on this model.
 
-Add an interface to your Pizzza model.
-
-
-```php
-<?php
-
-namespace Acme\DemoBundle\Entity;
-
-use Rezzza\ModelViolationLoggerBundle\Model\ViolationLoggerInterface;
-use Acme\DemoBundle\Entity\Violation\PizzaLogger as ViolationLogger;
-
-class Pizza implements ViolationLoggerInterface
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function getViolationLogger()
-    {
-        // Acme\DemoBundle\Entity\Violation is the path to the entity overrided (on step 1: installation)
-        // In this case, it's useful, because we will use a Generic logger, but you are not forced to define it.
-        return new ViolationLogger('Acme\DemoBundle\Entity\Violation');
-    }
-}
+Create a service with tag like that:
+```xml
+<service id="acme.pizza.violation.handler" class="\path\to\PizzaLogger">
+    <argument type="service" id="service_container" />
+    <tag name="vlr.model.violation.handler" />
+</service>
 ```
+
+Then create the handler
 
 So now, define your violation logger !
 
@@ -35,20 +20,28 @@ So now, define your violation logger !
 
 namespace Acme\DemoBundle\Entity\Violation;
 
-use Rezzza\ModelViolationLoggerBundle\Violation\Validator\SymfonyValidatorLogger;
-use Rezzza\ModelViolationLoggerBundle\Model\ViolationLoggerInterface as ModelViolationLoggerInterface;
-use Rezzza\ModelViolationLoggerBundle\Violation;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Rezzza\ModelViolationLoggerBundle\Handler\ViolationHandlerInterface;
+use Rezzza\ModelViolationLoggerBundle\Violation\ViolationList;
 
-class PizzaLogger extends SymfonyValidatorLogger
+class PizzaLogger implements ViolationHandlerInterface
 {
+    /*---- define container is optional, you can inject service manually ----*/
+    private $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
     /**
      * @{inheritdoc}
      */
-    public function validate(ModelViolationLoggerInterface $object, Violation\ViolationList $violationList)
+    public function validate($object, ViolationList $violationList)
     {
-        // becase we inherits from SymfonyValidatorLogger, it'll validate your object with symfony validator
-        // and log violations or fix them.
-        $violationList = parent::validate($object, $violationList);
+        // With theses 2 lines bellow, we'll log violations from symfony validation.
+        $violationList = $this->container->get('rezzza.violation.symfony_validation.handler')
+            ->validate($object, $violationList);
 
         // here you can add custom code ...
         $violation = count($violationList) > 0;
@@ -56,37 +49,17 @@ class PizzaLogger extends SymfonyValidatorLogger
             $object->setIsViolation($violation);
             // persist, flush
         }
-    }
 
-
-}
-```
-
-If you want to add yor custom Logger, it looks like:
-```php
-<?php
-
-namespace Acme\DemoBundle\Entity\Violation;
-
-use Rezzza\ModelViolationLoggerBundle\Violation\AbstractViolationLogger;
-use Rezzza\ModelViolationLoggerBundle\Violation\ViolationLoggerInterface;
-use Rezzza\ModelViolationLoggerBundle\Model\ViolationLoggerInterface as ModelViolationLoggerInterface;
-use Rezzza\ModelViolationLoggerBundle\Violation;
-
-class PizzaLogger extends AbstractViolationLogger implements ViolationLoggerInterface
-{
-    /**
-     * @{inheritdoc}
-     */
-    public function validate(ModelViolationLoggerInterface $object, Violation\ViolationList $violationList)
-    {
-        $violation = new \Path\To\Violation();
+        // here we'll add custom violations
+        $violation = new \Path\To\Entity\Violation();
         $violation->setCode('...');
         $violation->setMessage('...');
         $violation->setMessageParameters('...');
         $violation->setCreatedAt(new \DateTime());
 
         $violationList->add($violation);
-        //etc...
+
+        return $violationList;
     }
 }
+```
