@@ -7,7 +7,7 @@ Create a service with tag like that:
 ```xml
 <service id="acme.pizza.violation.handler" class="\path\to\PizzaLogger">
     <argument type="service" id="service_container" />
-    <tag name="vlr.model.violation.handler" />
+    <tag name="vlr.model.violation.handler" priority="1" />
 </service>
 ```
 

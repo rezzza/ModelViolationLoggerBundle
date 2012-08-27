@@ -41,20 +41,27 @@ class Processor
             throw new \InvalidArgumentException('Processor only accept objects');
         }
 
-        $handler = $this->handlerManager->fetch($model);
-        if (!$handler) {
+        $handlers = $this->handlerManager->fetch($model);
+        if (!$handlers) {
             return;
         }
 
-        $list = new ViolationList();
+        $existing     = $this->violationManager->getViolationListNotFixed($model);
 
-        $handler->validate($model, $list);
-
-        foreach ($list as $violation) {
-            $violation->setSubjectModel($this->violationManager->getClassForModel($model));
-            $violation->setSubjectId($model->getId()); // actually just support that
+        foreach ($existing as $violation) {
+            $violation->setFixed(true); // wait to be unfixed if reappear
         }
 
-        return $this->violationManager->link($model, $list);
+        $subjectModel = $this->violationManager->getClassForModel($model);
+        $subjectId    = $model->getId(); // actually just support that
+        $list         = new ViolationList($subjectModel, $subjectId, $existing);
+
+        foreach ($handlers as $handler) {
+            $handler->validate($model, $list);
+        }
+
+        foreach ($list as $violation) {
+            $this->violationManager->updateViolation($violation);
+        }
     }
 }

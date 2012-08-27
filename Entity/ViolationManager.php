@@ -3,8 +3,8 @@
 namespace Rezzza\ModelViolationLoggerBundle\Entity;
 
 use Rezzza\ModelViolationLoggerBundle\Model\ViolationManagerInterface;
+use Rezzza\ModelViolationLoggerBundle\Model\Violation;
 use Rezzza\ModelViolationLoggerBundle\Violation\ViolationList;
-use Rezzza\ModelViolationLoggerBundle\Violation\ViolationListComparator;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -32,27 +32,10 @@ class ViolationManager implements ViolationManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function link($model, ViolationList $list)
+    public function updateViolation(Violation $violation)
     {
-        $actualViolations = $this->getViolationListNotFixed($model);
-
-        $comparator = ViolationListComparator::compare($actualViolations, $list);
-
         $objectManager = $this->getObjectManager();
-
-        $change = false;
-        foreach ($comparator->removed as $removedViolation) {
-            $change = true;
-
-            $removedViolation->setFixed(true);
-            $objectManager->persist($removedViolation);
-        }
-
-        foreach ($comparator->new as $newViolation) {
-            $change = true;
-            $objectManager->persist($newViolation);
-        }
-
+        $objectManager->persist($violation);
         $objectManager->flush();
     }
 
@@ -61,7 +44,10 @@ class ViolationManager implements ViolationManagerInterface
      */
     public function getViolationListNotFixed($model)
     {
-        $list = new ViolationList();
+        $modelClass = $this->getClassForModel($model);
+        $modelId    = $model->getId();
+
+        $list = new ViolationList($modelClass, $modelId);
 
         $violations = $this->getObjectManager()
             ->getRepository($this->violationClass)
@@ -70,8 +56,8 @@ class ViolationManager implements ViolationManagerInterface
             ->andWhere('v.subjectModel = :subjectModel')
             ->andWhere('v.subjectId = :subjectId')
             ->setParameter('fixed', false)
-            ->setParameter('subjectModel', $this->getClassForModel($model))
-            ->setParameter('subjectId', $model->getId())
+            ->setParameter('subjectModel', $modelClass)
+            ->setParameter('subjectId', $modelId)
             ->orderBy('v.createdAt', 'DESC')
             ->getQuery()
             ->getResult();

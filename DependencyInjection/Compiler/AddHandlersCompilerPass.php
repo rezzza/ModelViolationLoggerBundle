@@ -6,12 +6,12 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
 /**
- * AddLoggersCompilerPass
+ * AddHandlersCompilerPass
  *
  * @uses CompilerPassInterface
  * @author Stephane PY <py.stephane1@gmail.com>
  */
-class AddLoggersCompilerPass implements CompilerPassInterface
+class AddHandlersCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
@@ -19,9 +19,11 @@ class AddLoggersCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         foreach ($container->findTaggedServiceIds('vlr.model.violation.handler') as $id => $tags) {
+            $priority = isset($tags[0]) && isset($tags[0]['priority']) ? $tags[0]['priority'] : null;
+
             $container
                 ->getDefinition('rezzza.violation.handler.manager')
-                ->addMethodCall('add', array($container->getDefinition($id)));
+                ->addMethodCall('add', array($container->getDefinition($id), $priority));
         }
     }
 }

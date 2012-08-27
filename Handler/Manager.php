@@ -17,9 +17,12 @@ class Manager
     /**
      * @param ViolationHandlerInterface $handler handler
      */
-    public function add(ViolationHandlerInterface $handler)
+    public function add(ViolationHandlerInterface $handler, $priority = null)
     {
-        $this->handlers[$handler->getModel()] = $handler;
+        $this->handlers[$handler->getModel()][] = array(
+            'priority' => $priority,
+            'handler'  => $handler,
+        );
     }
 
     /**
@@ -31,8 +34,31 @@ class Manager
     {
         foreach ($this->handlers as $handlerModel => $handler) {
             if ($model instanceof $handlerModel) {
-                return $handler;
+                return $this->fetchHandlersByPriority($this->handlers[$handlerModel]);
             }
         }
+    }
+
+    /**
+     * @param array $handlers handlers
+     *
+     * @return array
+     */
+    public function fetchHandlersByPriority(array $handlers)
+    {
+        usort($handlers, function($a, $b) {
+            if ($a['priority'] == $b['priority']) {
+                return 0;
+            }
+
+            return $a['priority'] < $b['priority'] ? -1 : 1;
+        });
+
+        $result = array();
+        foreach ($handlers as $handler) {
+            $result[] = $handler['handler'];
+        }
+
+        return $result;
     }
 }

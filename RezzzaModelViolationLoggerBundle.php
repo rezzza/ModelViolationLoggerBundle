@@ -4,7 +4,7 @@ namespace Rezzza\ModelViolationLoggerBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Rezzza\ModelViolationLoggerBundle\DependencyInjection\Compiler\AddLoggersCompilerPass;
+use Rezzza\ModelViolationLoggerBundle\DependencyInjection\Compiler\AddHandlersCompilerPass;
 
 /**
  * RezzzaModelViolationLoggerBundle
@@ -19,7 +19,7 @@ class RezzzaModelViolationLoggerBundle extends Bundle
      */
     public function build(ContainerBuilder $container)
     {
-        $container->addCompilerPass(new AddLoggersCompilerPass());
+        $container->addCompilerPass(new AddHandlersCompilerPass());
     }
 
 }

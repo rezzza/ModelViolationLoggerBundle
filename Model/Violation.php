@@ -255,7 +255,6 @@ class Violation
             'code',
             'message',
             'messageParameters',
-            'fixed',
         );
     }
 }

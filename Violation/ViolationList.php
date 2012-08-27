@@ -15,6 +15,33 @@ class ViolationList implements IteratorAggregate, Countable
     protected $violations = array();
 
     /**
+     * @var string
+     */
+    protected $subjectModel;
+
+    /**
+     * @var integer
+     */
+    protected $subjectId;
+
+    /**
+     * @param string        $subjectModel       subjectModel
+     * @param integer       $subjectId          subjectId
+     * @param ViolationList $existingViolations existingViolations
+     */
+    public function __construct($subjectModel, $subjectId, ViolationList $existingViolations = null)
+    {
+        $this->subjectModel = $subjectModel;
+        $this->subjectId    = $subjectId;
+
+        if ($existingViolations) {
+
+            $this->violations = $existingViolations->getIterator()
+                ->getArrayCopy();
+        }
+    }
+
+    /**
      * @return ArrayIterator
      */
     public function getIterator()
@@ -35,6 +62,15 @@ class ViolationList implements IteratorAggregate, Countable
      */
     public function add(Violation $violation)
     {
+        $violation->setSubjectModel($this->subjectModel);
+        $violation->setSubjectId($this->subjectId);
+        $violation->setFixed(false);
+
+        if (false !== $key = $this->contains($violation)) {
+            $this->violations[$key]->setFixed(false);
+            return;
+        }
+
         $this->violations[] = $violation;
     }
 
@@ -55,15 +91,4 @@ class ViolationList implements IteratorAggregate, Countable
 
         return false;
     }
-
-    /**
-     * @param mixed $index index
-     */
-    public function remove($index)
-    {
-        if (isset($this->violations[$index])) {
-            unset($this->violations[$index]);
-        }
-    }
-
 }
