@@ -1,2 +1,6 @@
+# directory
+bin
 vendor
+
+# file
 composer.lock
