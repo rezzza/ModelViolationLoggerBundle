@@ -20,12 +20,12 @@ class RezzzaModelViolationLoggerExtension extends Extension
 
         $config = $processor->processConfiguration($configuration, $configs);
 
-        $container->setAlias('rezzza.violation_manager', $config['violation_manager']);
-        $container->setParameter('rezzza.violation_class', $config['violation_class']);
-
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/services'));
         $loader->load(sprintf('%s.xml', $config['storage']));
         $loader->load('handler.xml');
         $loader->load('processor.xml');
+
+        $container->setAlias('rezzza.violation_manager', $config['violation_manager']);
+        $container->setParameter('rezzza.violation_class', $config['violation_class']);
     }
 }
