@@ -44,7 +44,7 @@ class Manager
      *
      * @return array
      */
-    public function fetchHandlersByPriority(array $handlers)
+    protected function fetchHandlersByPriority(array $handlers)
     {
         usort($handlers, function($a, $b) {
             if ($a['priority'] == $b['priority']) {

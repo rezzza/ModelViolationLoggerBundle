@@ -1,6 +1,8 @@
 RezzzaModelViolationLoggerBundle
 ================================
 
+[![Build Status](https://secure.travis-ci.org/rezzza/ModelViolationLoggerBundle.png)](http://travis-ci.org/rezzza/ModelViolationLoggerBundle)
+
 Store violations linked to a Model. You can easily retrieve entity with violations, look at them violations and fix them.
 
 Violations are automatically created/fixed at the persist/update of the entity.
