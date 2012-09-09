@@ -68,6 +68,7 @@ class ViolationList implements IteratorAggregate, Countable
 
         if (false !== $key = $this->contains($violation)) {
             $this->violations[$key]->setFixed(false);
+
             return;
         }
 
