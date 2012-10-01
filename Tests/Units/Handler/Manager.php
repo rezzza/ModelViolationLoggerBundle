@@ -16,7 +16,7 @@ use Rezzza\ModelViolationLoggerBundle\Handler\Manager as ManagerModel;
 class Manager extends atoum\test
 {
     /**
-     * @param atoum\factory $factory factory
+     * @param null|atoum\factory $factory factory
      */
     public function __construct(atoum\factory $factory = null)
     {
