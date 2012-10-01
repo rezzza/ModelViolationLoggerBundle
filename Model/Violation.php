@@ -245,7 +245,7 @@ class Violation
     }
 
     /**
-     * @return array
+     * @return array<string>
      */
     public function __sleep()
     {
