@@ -12,8 +12,9 @@ use Rezzza\ModelViolationLoggerBundle\Violation\ViolationList;
 interface ViolationHandlerInterface
 {
     /**
-     * @param object        $object        object
-     * @param ViolationList $violationList violationList
+     * @param  object        $object        object
+     * @param  ViolationList $violationList violationList
+     * @return ViolationList
      */
     public function validate($object, ViolationList $violationList);
 
