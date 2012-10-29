@@ -25,9 +25,9 @@ class ViolationList implements IteratorAggregate, Countable
     protected $subjectId;
 
     /**
-     * @param string        $subjectModel       subjectModel
-     * @param integer       $subjectId          subjectId
-     * @param ViolationList $existingViolations existingViolations
+     * @param string             $subjectModel       subjectModel
+     * @param integer            $subjectId          subjectId
+     * @param null|ViolationList $existingViolations existingViolations
      */
     public function __construct($subjectModel, $subjectId, ViolationList $existingViolations = null)
     {

@@ -22,5 +22,10 @@
     "autoload":     {
         "psr-0": { "Rezzza\\ModelViolationLoggerBundle": "" }
     },
-    "target-dir": "Rezzza/ModelViolationLoggerBundle"
+    "target-dir": "Rezzza/ModelViolationLoggerBundle",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
 }

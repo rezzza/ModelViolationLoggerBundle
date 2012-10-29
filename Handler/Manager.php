@@ -15,7 +15,8 @@ class Manager
     private $handlers = array();
 
     /**
-     * @param ViolationHandlerInterface $handler handler
+     * @param ViolationHandlerInterface $handler  handler
+     * @param integer|null              $priority
      */
     public function add(ViolationHandlerInterface $handler, $priority = null)
     {
