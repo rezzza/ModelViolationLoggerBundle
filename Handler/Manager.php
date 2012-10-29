@@ -12,7 +12,7 @@ class Manager
     /**
      * @var array
      */
-    private $handler = array();
+    private $handlers = array();
 
     /**
      * @param ViolationHandlerInterface $handler handler
