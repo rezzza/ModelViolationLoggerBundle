@@ -131,14 +131,14 @@ class ViolationManager implements ViolationManagerInterface
             }
         }
 
-        if (isset(($params['is_fixed'] && is_bool($params['is_fixed']))) {
+        if (isset($params['is_fixed']) && is_bool($params['is_fixed'])) {
             $queryBuilder
                 ->andWhere('v.fixed = :fixed')
                 ->setParameter('fixed', $params['is_fixed'])
             ;
         }
 
-        if (isset(($params['is_notified'])) {
+        if (isset($params['is_notified'])) {
             if (true == $params['is_notified']) {
                 $queryBuilder->andWhere('v.notifiedAt IS NOT NULL');
             } else {
