@@ -18,6 +18,8 @@
 
         <field name="fixed" column="fixed" type="boolean" />
 
+        <field name="notifiedAt" column="notified_at" type="datetime" nullable="true" />
+
         <field name="createdAt" column="created_at" type="datetime" />
 
         <field name="updatedAt" column="updated_at" type="datetime" />
