@@ -21,6 +21,18 @@ interface ViolationManagerInterface
     public function getViolationListNotFixed($model);
 
     /**
+     * @example $params = array(
+     *     'order' => 'ASC',
+     *     'subject' => $subject,
+     *     'is_fixed' => false,
+     *     'is_notified' => true,
+     * );
+     *
+     * @return ViolationList
+     */
+    public function getViolations(array $params = array());
+
+    /**
      * @param object $model model
      *
      * @return string

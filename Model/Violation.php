@@ -47,6 +47,11 @@ class Violation
     protected $fixed = false;
 
     /**
+     * @var \DateTime $notifiedAt
+     */
+    protected $notifiedAt;
+
+    /**
      * @var \DateTime $createdAt
      */
     protected $createdAt;
@@ -202,6 +207,25 @@ class Violation
     public function getFixed()
     {
         return (boolean) $this->fixed;
+    }
+
+    /**
+     * @param  \DateTime $notifiedAt
+     * @return Violation
+     */
+    public function setNotifiedAt(\DateTime $notifiedAt)
+    {
+        $this->notifiedAt = $notifiedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getNotifiedAt()
+    {
+        return $this->notifiedAt;
     }
 
     /**
