@@ -42,6 +42,18 @@ class ViolationManager implements ViolationManagerInterface
     /**
      * {@inheritdoc}
      */
+    public function updateViolationList(ViolationList $violationList)
+    {
+        $objectManager = $this->getObjectManager();
+        foreach ($violationList as $violation) {
+            $objectManager->persist($violation);
+        }
+        $objectManager->flush();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getViolationListNotFixed($model)
     {
         $modelClass = $this->getClassForModel($model);

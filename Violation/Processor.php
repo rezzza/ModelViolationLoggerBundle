@@ -60,8 +60,6 @@ class Processor
             $handler->validate($model, $list);
         }
 
-        foreach ($list as $violation) {
-            $this->violationManager->updateViolation($violation);
-        }
+        $this->violationManager->updateViolationList($list);
     }
 }
