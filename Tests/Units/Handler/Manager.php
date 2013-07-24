@@ -28,15 +28,18 @@ class Manager extends atoum\test
     {
         $this->mockClass('Rezzza\ModelViolationLoggerBundle\Handler\ViolationHandlerInterface', '\Mock');
 
-        $handler1 = new \Mock\ViolationHandlerInterface();
-        $handler1->getMockController()->getModel = '\stdClass';
+        $createHandler = function($v) {
+            $handler = new \mock\ViolationHandlerInterface();
+            $handler ->getMockController()->getModel = $v;
 
-        $handler2 = clone $handler1;
-        $handler3 = clone $handler1;
-        $handler4 = clone $handler1;
+            return $handler;
+        };
 
-        $handler5 = new \Mock\ViolationHandlerInterface();
-        $handler5->getMockController()->getModel = '\ReflectionClass';
+        $handler1 = $createHandler('\stdClass');
+        $handler2 = $createHandler('\stdClass');
+        $handler3 = $createHandler('\stdClass');
+        $handler4 = $createHandler('\stdClass');
+        $handler5 = $createHandler('\ReflectionClass');
 
         $manager = new ManagerModel();
         $manager->add($handler1, 3);
