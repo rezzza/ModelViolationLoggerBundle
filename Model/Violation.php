@@ -70,6 +70,14 @@ class Violation
     }
 
     /**
+     * @return boolean
+     */
+    public function isNew()
+    {
+        return null === $this->id;
+    }
+
+    /**
      * @param ConstraintViolation $constraint constraint
      *
      * @return self

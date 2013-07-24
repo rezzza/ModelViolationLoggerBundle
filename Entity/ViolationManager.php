@@ -44,10 +44,16 @@ class ViolationManager implements ViolationManagerInterface
      */
     public function updateViolationList(ViolationList $violationList)
     {
+        if (count($violationList) === 0) {
+            return;
+        }
+
         $objectManager = $this->getObjectManager();
+
         foreach ($violationList as $violation) {
             $objectManager->persist($violation);
         }
+
         $objectManager->flush();
     }
 

@@ -15,7 +15,8 @@
         </service>
 
         <service id="rezzza.violation_listener" class="%rezzza.violation_listener.class%" public="false">
-            <argument type="service" id="rezzza.violation_manager.processor" />
+            <argument type="service" id="rezzza.violation_manager.default" />
+            <argument type="service" id="rezzza.violation.handler.manager" />
             <tag name="doctrine.event_listener" event="postUpdate" />
             <tag name="doctrine.event_listener" event="postPersist" />
         </service>

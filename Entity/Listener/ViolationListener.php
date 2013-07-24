@@ -2,8 +2,10 @@
 
 namespace Rezzza\ModelViolationLoggerBundle\Entity\Listener;
 
-use Rezzza\ModelViolationLoggerBundle\Violation\Processor;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Rezzza\ModelViolationLoggerBundle\Model\ViolationManagerInterface;
+use Rezzza\ModelViolationLoggerBundle\Handler\Manager as HandlerManager;
+use Rezzza\ModelViolationLoggerBundle\Violation\ViolationList;
 
 /**
  * ViolationListener
@@ -13,16 +15,23 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 class ViolationListener
 {
     /**
-     * @var Processor
+     * @var ViolationManagerInterface
      */
-    private $processor;
+    private $violationManager;
 
     /**
-     * @param Processor $processor processor
+     * @var HandlerManager
      */
-    public function __construct(Processor $processor)
+    private $handlerManager;
+
+    /**
+     * @param ViolationManagerInterface $violationManager violationManager
+     * @param HandlerManager            $manager          manager
+     */
+    public function __construct(ViolationManagerInterface $violationManager, HandlerManager $manager)
     {
-        $this->processor      = $processor;
+        $this->violationManager = $violationManager;
+        $this->handlerManager   = $manager;
     }
 
     /**
@@ -30,7 +39,7 @@ class ViolationListener
      */
     public function postPersist(LifecycleEventArgs $args)
     {
-        $this->processor->process($args->getEntity());
+        $this->process($args);
     }
 
     /**
@@ -38,6 +47,43 @@ class ViolationListener
      */
     public function postUpdate(LifecycleEventArgs $args)
     {
-        $this->processor->process($args->getEntity());
+        $this->process($args);
+    }
+
+    /**
+     * @param LifecycleEventArgs $args args
+     */
+    protected function process(LifecycleEventArgs $args)
+    {
+        $model = $args->getEntity();
+
+        if (!is_object($model)) {
+            throw new \InvalidArgumentException('Processor only accept objects');
+        }
+
+        $handlers = $this->handlerManager->fetch($model);
+        if (!$handlers) {
+            return;
+        }
+
+        $existing     = $this->violationManager->getViolationListNotFixed($model);
+
+        foreach ($existing as $violation) {
+            $violation->setFixed(true); // wait to be unfixed if reappear
+        }
+
+        $subjectModel = $this->violationManager->getClassForModel($model);
+        $subjectId    = $model->getId(); // actually just support that
+        $list         = new ViolationList($subjectModel, $subjectId, $existing);
+
+        foreach ($handlers as $handler) {
+            $handler->validate($model, $list);
+        }
+
+        if (count($list) === 0) {
+            return;
+        }
+
+        $this->violationManager->updateViolationList($list);
     }
 }
