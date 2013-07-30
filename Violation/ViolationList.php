@@ -17,12 +17,12 @@ class ViolationList implements IteratorAggregate, Countable
     /**
      * @var string
      */
-    protected $subjectModel;
+    public $subjectModel;
 
     /**
      * @var integer
      */
-    protected $subjectId;
+    public $subjectId;
 
     /**
      * @param string             $subjectModel       subjectModel
@@ -91,5 +91,15 @@ class ViolationList implements IteratorAggregate, Countable
         }
 
         return false;
+    }
+
+    /**
+     * @param boolean $fixed fixed
+     */
+    public function setFixed($fixed)
+    {
+        foreach ($this->violations as $violation) {
+            $violation->setFixed($fixed);
+        }
     }
 }

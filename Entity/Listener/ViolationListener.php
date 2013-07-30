@@ -3,6 +3,7 @@
 namespace Rezzza\ModelViolationLoggerBundle\Entity\Listener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Rezzza\ModelViolationLoggerBundle\Model\ViolationManagerInterface;
 use Rezzza\ModelViolationLoggerBundle\Handler\Manager as HandlerManager;
 use Rezzza\ModelViolationLoggerBundle\Violation\ViolationList;
@@ -24,6 +25,8 @@ class ViolationListener
      */
     private $handlerManager;
 
+    private $violations = array();
+
     /**
      * @param ViolationManagerInterface $violationManager violationManager
      * @param HandlerManager            $manager          manager
@@ -35,11 +38,29 @@ class ViolationListener
     }
 
     /**
+     * @param PostFlushEventArgs $args args
+     */
+    public function postFlush(PostFlushEventArgs $args)
+    {
+        if (count($this->violations) === 0) {
+            return null;
+        }
+
+        $entityManager = $args->getEntityManager();
+
+        foreach ($this->violations as $violation) {
+            $entityManager->persist($violation);
+        }
+
+        $entityManager->flush();
+    }
+
+    /**
      * @param LifecycleEventArgs $args args
      */
     public function postPersist(LifecycleEventArgs $args)
     {
-        $this->process($args);
+        $this->computeViolations($args->getEntity(), $args->getEntityManager(), $args->getEntityManager()->getUnitOfWork());
     }
 
     /**
@@ -47,43 +68,32 @@ class ViolationListener
      */
     public function postUpdate(LifecycleEventArgs $args)
     {
-        $this->process($args);
+        $this->computeViolations($args->getEntity(), $args->getEntityManager(), $args->getEntityManager()->getUnitOfWork());
     }
 
     /**
-     * @param LifecycleEventArgs $args args
+     * @param object $entity entity
      */
-    protected function process(LifecycleEventArgs $args)
+    private function computeViolations($entity, $entityManager, $uow)
     {
-        $model = $args->getEntity();
-
-        if (!is_object($model)) {
-            throw new \InvalidArgumentException('Processor only accept objects');
+        if (!$handlers = $this->handlerManager->fetch($entity)) {
+            return null;
         }
 
-        $handlers = $this->handlerManager->fetch($model);
-        if (!$handlers) {
-            return;
-        }
-
-        $existing     = $this->violationManager->getViolationListNotFixed($model);
-
-        foreach ($existing as $violation) {
-            $violation->setFixed(true); // wait to be unfixed if reappear
-        }
-
-        $subjectModel = $this->violationManager->getClassForModel($model);
-        $subjectId    = $model->getId(); // actually just support that
-        $list         = new ViolationList($subjectModel, $subjectId, $existing);
+        $list = $this->violationManager->getViolationListNotFixed($entity);
+        $list->setFixed(true);
 
         foreach ($handlers as $handler) {
-            $handler->validate($model, $list);
+            $handler->validate($entity, $list);
         }
 
-        if (count($list) === 0) {
-            return;
-        }
+        $uow->computeChangeSets();
 
-        $this->violationManager->updateViolationList($list);
+        foreach ($list as $violation) {
+            $changeSet = $uow->getEntityChangeSet($violation);
+            if (!empty($changeSet) || !$entityManager->contains($violation)) {
+                $this->violations[spl_object_hash($violation)] = $violation;
+            }
+        }
     }
 }

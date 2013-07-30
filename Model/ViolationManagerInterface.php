@@ -8,18 +8,6 @@ use Rezzza\ModelViolationLoggerBundle\Violation\ViolationList;
 interface ViolationManagerInterface
 {
     /**
-     * @param  Violation $violation violation
-     * @return void
-     */
-    public function updateViolation(Violation $violation);
-
-    /**
-     * @param  ViolationList $violationList violation list
-     * @return void
-     */
-    public function updateViolationList(ViolationList $violationList);
-
-    /**
      * @param object $model model
      *
      * @return ViolationList
