@@ -3,10 +3,15 @@
 namespace Rezzza\ModelViolationLoggerBundle\Model;
 
 use Rezzza\ModelViolationLoggerBundle\Model\Violation;
-use Rezzza\ModelViolationLoggerBundle\Violation\ViolationList;
 
 interface ViolationManagerInterface
 {
+    /**
+     * @param  Violation $violation violation
+     * @return void
+     */
+    public function update(Violation $violation);
+
     /**
      * @param object $model model
      *
