@@ -3,7 +3,7 @@
 namespace Rezzza\ModelViolationLoggerBundle\Entity;
 
 use Rezzza\ModelViolationLoggerBundle\Model\ViolationManagerInterface;
-use Rezzza\ModelViolationLoggerBundle\Model\Violation;
+use Rezzza\ModelViolationLoggerBundle\Model\Violation as ModelViolation;
 use Rezzza\ModelViolationLoggerBundle\Violation\ViolationList;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -32,7 +32,7 @@ class ViolationManager implements ViolationManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function update(Violation $violation)
+    public function update(ModelViolation $violation)
     {
         $objectManager = $this->getObjectManager();
         $objectManager->persist($violation);
