@@ -58,6 +58,8 @@ class ViolationListener
         }
 
         $entityManager->flush();
+
+        $this->violations = array();
     }
 
     /**

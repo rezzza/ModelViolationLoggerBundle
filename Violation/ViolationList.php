@@ -66,6 +66,12 @@ class ViolationList implements IteratorAggregate, Countable
         $violation->setSubjectId($this->subjectId);
         $violation->setFixed(false);
 
+        if (!$violation->getId() && false !== $key = $this->contains($violation)) {
+            $this->violations[$key]->setFixed(false);
+
+            return;
+        }
+
         $this->violations[] = $violation;
     }
 
