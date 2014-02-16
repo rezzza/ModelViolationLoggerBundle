@@ -6,6 +6,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\UnitOfWork;
+use Doctrine\ORM\Version as ORMVersion;
 use Rezzza\ModelViolationLoggerBundle\Model\ViolationManagerInterface;
 use Rezzza\ModelViolationLoggerBundle\Handler\Manager as HandlerManager;
 use Rezzza\ModelViolationLoggerBundle\Violation\ViolationList;
@@ -57,7 +58,11 @@ class ViolationListener
             $entityManager->persist($violation);
         }
 
-        $entityManager->flush();
+        // As explained here, since doctrine 2.4 it's even more rsiky to call em flush into a *flush event
+        // https://github.com/doctrine/doctrine2/commit/b6c3fc5b1ab8f97ba3a47b5a667ef8986c48059e
+        if (0 < ORMVersion::compare('2.4.0')) {
+            $entityManager->flush();
+        }
 
         $this->violations = array();
     }
