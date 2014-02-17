@@ -48,6 +48,13 @@ class ViolationListener
      */
     public function postFlush(PostFlushEventArgs $args)
     {
+        // As explained here, since doctrine 2.4 it's even more risky to call em flush into a *flush event
+        // https://github.com/doctrine/doctrine2/commit/b6c3fc5b1ab8f97ba3a47b5a667ef8986c48059e
+        // Doctrine >= 2.4
+        if (0 > ORMVersion::compare('2.4.0')) {
+            return;
+        }
+
         if (count($this->violations) === 0) {
             return null;
         }
@@ -58,11 +65,7 @@ class ViolationListener
             $entityManager->persist($violation);
         }
 
-        // As explained here, since doctrine 2.4 it's even more rsiky to call em flush into a *flush event
-        // https://github.com/doctrine/doctrine2/commit/b6c3fc5b1ab8f97ba3a47b5a667ef8986c48059e
-        if (0 < ORMVersion::compare('2.4.0')) {
-            $entityManager->flush();
-        }
+        $entityManager->flush();
 
         $this->violations = array();
     }
@@ -112,7 +115,18 @@ class ViolationListener
         foreach ($list as $violation) {
             $changeSet = $uow->getEntityChangeSet($violation);
             if (!empty($changeSet) || !$entityManager->contains($violation)) {
-                $this->violations[spl_object_hash($violation)] = $violation;
+                // As explained here, since doctrine 2.4 it's even more risky to call em flush into a *flush event
+                // https://github.com/doctrine/doctrine2/commit/b6c3fc5b1ab8f97ba3a47b5a667ef8986c48059e
+                // Doctrine <= 2.4
+                if (0 > ORMVersion::compare('2.4.0')) {
+                    $this->violations[spl_object_hash($violation)] = $violation;
+                } else {
+                    if (!$entityManager->contains($violation)) {
+                        $uow->scheduleForUpdate($violation);
+                    } else {
+                        $uow->scheduleForInsert($violation);
+                    }
+                }
             }
         }
     }
