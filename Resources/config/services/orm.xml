@@ -19,7 +19,6 @@
             <argument type="service" id="rezzza.violation.handler.manager" />
             <tag name="doctrine.event_listener" event="postUpdate" />
             <tag name="doctrine.event_listener" event="postPersist" />
-            <tag name="doctrine.event_listener" event="postFlush" />
         </service>
     </services>
 
