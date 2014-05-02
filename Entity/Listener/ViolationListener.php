@@ -29,11 +29,6 @@ class ViolationListener
     private $handlerManager;
 
     /**
-     * @var array
-     */
-    private $violations = array();
-
-    /**
      * @param ViolationManagerInterface $violationManager violationManager
      * @param HandlerManager            $manager          manager
      */
@@ -41,32 +36,6 @@ class ViolationListener
     {
         $this->violationManager = $violationManager;
         $this->handlerManager   = $manager;
-    }
-
-    /**
-     * @param PostFlushEventArgs $args args
-     */
-    public function postFlush(PostFlushEventArgs $args)
-    {
-        // As explained here, since doctrine 2.4 it's even more risky to call em flush into a *flush event
-        // https://github.com/doctrine/doctrine2/commit/b6c3fc5b1ab8f97ba3a47b5a667ef8986c48059e
-        // Doctrine >= 2.4
-        if (0 > ORMVersion::compare('2.4.0')) {
-            return;
-        }
-
-        if (count($this->violations) === 0) {
-            return null;
-        }
-
-        $entityManager = $args->getEntityManager();
-
-        foreach ($this->violations as $violation) {
-            $entityManager->persist($violation);
-        }
-
-        $this->violations = array();
-        $entityManager->flush();
     }
 
     /**
@@ -113,20 +82,11 @@ class ViolationListener
 
         foreach ($list as $violation) {
             $changeSet = $uow->getEntityChangeSet($violation);
-            if (!empty($changeSet) || !$entityManager->contains($violation)) {
-                // As explained here, since doctrine 2.4 it's even more risky to call em flush into a *flush event
-                // https://github.com/doctrine/doctrine2/commit/b6c3fc5b1ab8f97ba3a47b5a667ef8986c48059e
-                // Doctrine <= 2.4
-                if (0 < ORMVersion::compare('2.4.0')) {
-                    $this->violations[spl_object_hash($violation)] = $violation;
-                } else {
-                    if ($entityManager->contains($violation)) {
-                        $uow->scheduleForUpdate($violation);
-                    } else {
-                        $uow->scheduleForInsert($violation);
-                    }
-                }
+            if (!empty($changeSet)) {
+                $entityManager->persist($violation);
             }
         }
+
+        $entityManager->flush();
     }
 }
