@@ -2,7 +2,7 @@
 
 namespace Rezzza\ModelViolationLoggerBundle\Handler;
 
-use Symfony\Component\Validator\Validator;
+use Symfony\Component\Validator\ValidatorInterface;
 use Rezzza\ModelViolationLoggerBundle\Violation;
 
 /**
@@ -18,16 +18,17 @@ class SymfonyValidatorHandler implements ViolationHandlerInterface
     protected $model;
 
     /**
-     * @var Validator
+     * @var ValidatorInterface
      */
     protected $validator;
 
     /**
-     * @param string $model model
+     * @param string             $model     model
+     * @param ValidatorInterface $validator validator
      */
-    public function __construct($model, Validator $validator)
+    public function __construct($model, ValidatorInterface $validator)
     {
-        $this->model = $model;
+        $this->model     = $model;
         $this->validator = $validator;
     }
 
