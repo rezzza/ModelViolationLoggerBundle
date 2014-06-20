@@ -17,47 +17,52 @@ class Violation
     protected $id;
 
     /**
-     * @var string $subjectModel
+     * @var string
      */
     protected $subjectModel;
 
     /**
-     * @var integer $subjectId
+     * @var integer
      */
     protected $subjectId;
 
     /**
-     * @var string $code
+     * @var string
+     */
+    protected $subjectProperty;
+
+    /**
+     * @var string
      */
     protected $code;
 
     /**
-     * @var string $message
+     * @var string
      */
     protected $message;
 
     /**
-     * @var array $messageParameters
+     * @var array
      */
     protected $messageParameters = array();
 
     /**
-     * @var boolean $fixed
+     * @var boolean
      */
     protected $fixed = false;
 
     /**
-     * @var \DateTime $notifiedAt
+     * @var \DateTime
      */
     protected $notifiedAt;
 
     /**
-     * @var \DateTime $createdAt
+     * @var \DateTime
      */
     protected $createdAt;
 
     /**
-     * @var \DateTime $updatedAt
+     * @var \DateTime
      */
     protected $updatedAt;
 
@@ -88,6 +93,7 @@ class Violation
         $instance->setCode($constraint->getCode());
         $instance->setMessage($constraint->getMessageTemplate());
         $instance->setMessageParameters($constraint->getMessageParameters());
+        $instance->setSubjectProperty($constraint->getPropertyPath());
         $instance->setCreatedAt(new \DateTime());
 
         return $instance;
@@ -137,6 +143,22 @@ class Violation
     public function getSubjectId()
     {
         return (int) $this->subjectId;
+    }
+
+    /**
+     * @param string $subjectProperty
+     */
+    public function setSubjectProperty($subjectProperty)
+    {
+        $this->subjectProperty = $subjectProperty;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubjectProperty()
+    {
+        return $this->subjectProperty;
     }
 
     /**
