@@ -10,6 +10,8 @@
 
         <field name="subjectId" column="subject_id" type="integer" length="11" />
 
+        <field name="subjectProperty" column="subject_property" type="string" length="128" />
+
         <field name="code" column="code" type="string" length="40" nullable="true" />
 
         <field name="message" column="message" type="string" length="255" nullable="true" />
