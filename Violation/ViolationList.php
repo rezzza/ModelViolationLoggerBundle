@@ -102,4 +102,45 @@ class ViolationList implements IteratorAggregate, Countable
             $violation->setFixed($fixed);
         }
     }
+
+    /**
+     * @param ViolationList $violationList
+     * @return bool
+     */
+    public function hasSameSubject(ViolationList $violationList)
+    {
+        return ($violationList->subjectModel === $this->subjectModel
+                && $violationList->subjectId === $this->subjectId);
+    }
+
+    /**
+     * Return the violation only present in th current instance, or in the
+     * $violationList parameters.
+     *
+     * @param ViolationList $violationList
+     * @return ViolationList
+     * @throws \LogicException
+     */
+    public function diff(ViolationList $violationList)
+    {
+        if (!$this->hasSameSubject($violationList)) {
+            throw new \LogicException('You can\'t diff ValidationList who haven\'t the same subject.');
+        }
+
+        $diffViolationList = new ViolationList($this->subjectModel, $this->subjectId);
+
+        foreach ($this as $violation) {
+            if (false === $violationList->contains($violation)) {
+                $diffViolationList->add($violation);
+            }
+        }
+
+        foreach ($violationList as $violation) {
+            if (false === $this->contains($violation)) {
+                $diffViolationList->add($violation);
+            }
+        }
+
+        return $diffViolationList;
+    }
 }

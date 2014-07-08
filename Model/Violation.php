@@ -306,6 +306,7 @@ class Violation
         return array(
             'subjectModel',
             'subjectId',
+            'subjectProperty',
             'code',
             'message',
             'messageParameters',
