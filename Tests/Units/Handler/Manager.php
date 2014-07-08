@@ -2,8 +2,6 @@
 
 namespace Rezzza\ModelViolationLoggerBundle\Tests\Units\Handler;
 
-require_once __DIR__ . '/../../../vendor/autoload.php';
-
 use mageekguy\atoum;
 use Rezzza\ModelViolationLoggerBundle\Handler\Manager as ManagerModel;
 
@@ -15,14 +13,6 @@ use Rezzza\ModelViolationLoggerBundle\Handler\Manager as ManagerModel;
  */
 class Manager extends atoum\test
 {
-    /**
-     * @param null|atoum\factory $factory factory
-     */
-    public function __construct(atoum\factory $factory = null)
-    {
-       $this->setTestNamespace('Tests\Units');
-       parent::__construct($factory);
-    }
 
     public function testFetch()
     {
