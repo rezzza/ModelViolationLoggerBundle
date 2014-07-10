@@ -304,7 +304,7 @@ class Violation
      */
     public function equals(Violation $violation)
     {
-        return (serialize($this) == serialize($violation));
+        return (serialize($this) === serialize($violation));
     }
 
     /**
