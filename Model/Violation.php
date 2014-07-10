@@ -113,7 +113,7 @@ class Violation
      */
     public function setSubjectModel($subjectModel)
     {
-        $this->subjectModel = $subjectModel;
+        $this->subjectModel = (string) $subjectModel;
 
         return $this;
     }
@@ -150,7 +150,7 @@ class Violation
      */
     public function setSubjectProperty($subjectProperty)
     {
-        $this->subjectProperty = $subjectProperty;
+        $this->subjectProperty = (string) $subjectProperty;
     }
 
     /**
@@ -167,7 +167,7 @@ class Violation
      */
     public function setCode($code)
     {
-        $this->code = $code;
+        $this->code = (string) $code;
 
         return $this;
     }
@@ -186,7 +186,7 @@ class Violation
      */
     public function setMessage($message)
     {
-        $this->message = $message;
+        $this->message = (string) $message;
 
         return $this;
     }
@@ -296,6 +296,15 @@ class Violation
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @param Violation $violation
+     * @return bool
+     */
+    public function equals(Violation $violation)
+    {
+        return (serialize($this) == serialize($violation));
     }
 
     /**

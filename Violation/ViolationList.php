@@ -82,10 +82,8 @@ class ViolationList implements IteratorAggregate, Countable
      */
     public function contains(Violation $violation)
     {
-        $checkViolationSerialized = serialize($violation);
-
-        foreach ($this->violations as $key => $violation) {
-            if (serialize($violation) === $checkViolationSerialized) {
+        foreach ($this->violations as $key => $currentViolation) {
+            if ($currentViolation->equals($violation)) {
                 return $key;
             }
         }
