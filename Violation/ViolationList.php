@@ -2,6 +2,8 @@
 
 namespace Rezzza\ModelViolationLoggerBundle\Violation;
 
+use Doctrine\Common\Util\ClassUtils;
+use Symfony\Component\Validator\ConstraintViolationList;
 use Rezzza\ModelViolationLoggerBundle\Model\Violation;
 use \IteratorAggregate;
 use \ArrayIterator;
@@ -39,6 +41,20 @@ class ViolationList implements IteratorAggregate, Countable
             $this->violations = $existingViolations->getIterator()
                 ->getArrayCopy();
         }
+    }
+
+    public static function fromConstraintViolationList(ConstraintViolationList $constraintViolations, $model)
+    {
+        $violationList = new ViolationList(ClassUtils::getClass($model), $model->getId());
+
+        foreach ($constraintViolations as $constraintViolation) {
+            $violation = Violation::createFromConstraintViolation($constraintViolation);
+            $violation->setSubjectModel(ClassUtils::getClass($model));
+            $violation->setSubjectId($model->getId());
+            $violationList->add($violation);
+        }
+
+        return $violationList;
     }
 
     /**
