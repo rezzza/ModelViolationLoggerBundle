@@ -304,12 +304,16 @@ class Violation
      */
     public function equals(Violation $violation)
     {
-        return (serialize($this) === serialize($violation));
+        return
+            $this->getSubjectModel() === $violation->getSubjectModel() &&
+            $this->getSubjectId() === $violation->getSubjectId() &&
+            $this->getSubjectProperty() === $violation->getSubjectProperty() &&
+            $this->getCode() === $violation->getCode() &&
+            $this->getMessage() === $violation->getMessage() &&
+            $this->getMessageParameters() === $violation->getMessageParameters()
+        ;
     }
 
-    /**
-     * @return array<string>
-     */
     public function __sleep()
     {
         return array(
