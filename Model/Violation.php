@@ -92,7 +92,7 @@ class Violation
         $instance = new static();
         $instance->setCode($constraint->getCode());
         $instance->setMessage($constraint->getMessageTemplate());
-        $instance->setMessageParameters($constraint->getMessageParameters());
+        $instance->setMessageParameters($constraint->getParameters());
         $instance->setSubjectProperty($constraint->getPropertyPath());
         $instance->setCreatedAt(new \DateTime());
 
